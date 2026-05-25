@@ -963,3 +963,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; line-height: 1.2; }
     font-weight: 700;
     border-bottom: 2px solid #e53e3e;
 }
+
+/* Hospital-specific navbar styling */
+.hospital-avatar {
+    background: var(--gradient-blood) !important;
+    border: 2px solid var(--blood-red);
+}
+
+.bg-blood {
+    background: var(--blood-red) !important;
+}
+
+/* Hospital login page specific styles */
+.hospital-login-visual {
+    background: linear-gradient(135deg, #1a3a4a 0%, #0f272f 100%);
+}

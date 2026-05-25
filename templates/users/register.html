@@ -10,6 +10,10 @@
                         <div class="auth-logo"><i class="bi bi-person-plus-fill"></i></div>
                         <h3 class="fw-bold mt-3">Join BloodConnect</h3>
                         <p class="text-muted small">Create your account to start saving lives</p>
+                        <div class="alert alert-info small mt-2">
+                            <i class="bi bi-info-circle me-1"></i>
+                            <strong>Hospitals:</strong> Select "Hospital" role for dedicated healthcare features
+                        </div>
                     </div>
                     
                     <!-- Role Selection -->
@@ -128,6 +132,11 @@
                         <p class="text-muted small">Already have an account? 
                             <a href="{% url 'login' %}" class="text-blood fw-semibold">Login here</a>
                         </p>
+                        <div class="alert alert-light small mt-2">
+                            <i class="bi bi-building-fill-cross me-1 text-blood"></i>
+                            <a href="{% url 'hospital_login' %}" class="text-blood fw-semibold">Hospital Login</a> 
+                            for registered healthcare institutions
+                        </div>
                     </div>
                 </div>
             </div>

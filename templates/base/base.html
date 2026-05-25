@@ -49,26 +49,39 @@
                     {% elif user.role == 'hospital' %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i
                                 class="bi bi-house-door me-1"></i>Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'hospital_dashboard' %}"><i
+                                class="bi bi-building-fill-cross me-1"></i>Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'request_list' %}"><i
                                 class="bi bi-people me-1"></i>Seekers</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'search_donors' %}"><i
                                 class="bi bi-heart-pulse me-1"></i>Donors</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'hospital_dashboard' %}"><i
-                                class="bi bi-building-fill-cross me-1"></i>Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'hospital_list' %}"><i
+                                class="bi bi-hospital me-1"></i>All Hospitals</a></li>
                     {% endif %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'request_list' %}"><i
                                 class="bi bi-exclamation-circle me-1"></i>Requests</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#"
                             data-bs-toggle="dropdown">
-                            <div class="nav-avatar"><i class="bi bi-person-fill"></i></div>
-                            <span class="d-none d-lg-inline">{{ user.first_name|default:user.username }}</span>
+                            <div class="nav-avatar {% if user.role == 'hospital' %}hospital-avatar{% endif %}">
+                                <i class="bi {% if user.role == 'hospital' %}bi-building-fill-cross{% else %}bi-person-fill{% endif %}"></i>
+                            </div>
+                            <div class="d-none d-lg-inline">
+                                <span class="fw-semibold">{{ user.first_name|default:user.username }}</span>
+                                {% if user.role == 'hospital' %}
+                                <span class="badge bg-blood ms-1">Hospital</span>
+                                {% endif %}
+                            </div>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="{% url 'profile' %}"><i
                                         class="bi bi-person me-2"></i>Profile</a></li>
                             <li><a class="dropdown-item" href="{% url 'dashboard' %}"><i
                                         class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                            {% if user.role == 'hospital' %}
+                            <li><a class="dropdown-item" href="{% url 'hospital_dashboard' %}"><i
+                                        class="bi bi-building-fill-cross me-2"></i>Hospital Dashboard</a></li>
+                            {% endif %}
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -106,6 +119,8 @@
                     </li>
                     <li class="nav-item ms-2"><a class="btn btn-outline-light btn-sm px-3"
                             href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item ms-1"><a class="btn btn-outline-light btn-sm px-3"
+                            href="{% url 'hospital_login' %}">Hospital Login</a></li>
                     <li class="nav-item ms-1"><a class="btn btn-blood btn-sm px-3"
                             href="{% url 'register' %}">Register</a></li>
                     {% endif %}
