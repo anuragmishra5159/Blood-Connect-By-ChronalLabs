@@ -213,6 +213,12 @@
                     <div class="how-icon"><i class="bi bi-person-plus-fill"></i></div>
                     <h5 class="fw-bold mt-3">Register</h5>
                     <p class="text-muted small">Sign up as a Donor, Seeker or Hospital with your medical details.</p>
+
+                    <div class="how-cta-wrap mt-4">
+                        <a href="/users/register/" class="btn btn-blood how-cta-btn">
+                            <i class="bi bi-heart-fill me-2"></i>Register Now
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
@@ -221,6 +227,12 @@
                     <div class="how-icon" style="background:rgba(52,193,198,0.1);color:var(--teal)"><i class="bi bi-search-heart"></i></div>
                     <h5 class="fw-bold mt-3">Connect</h5>
                     <p class="text-muted small">Search for compatible donors or post an emergency blood request instantly.</p>
+
+                    <div class="how-cta-wrap mt-4">
+                        <a href="/requests/list/" class="btn btn-outline-blood how-cta-btn">
+                            <i class="bi bi-search me-2"></i>View Requests
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
@@ -229,6 +241,12 @@
                     <div class="how-icon" style="background:rgba(34,197,94,0.1);color:#22c55e"><i class="bi bi-shield-fill-check"></i></div>
                     <h5 class="fw-bold mt-3">Save Lives</h5>
                     <p class="text-muted small">Meet at the hospital, donate blood, and be someone's hero today.</p>
+
+                    <div class="how-cta-wrap mt-4">
+                        <a href="/hospitals/list/" class="btn btn-blood how-cta-btn">
+                            <i class="bi bi-hospital-fill me-2"></i>Find Hospitals
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -429,7 +447,7 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
+ <script>
 // ============================================================
 //  HOME PAGE MAP — with hospital search
 // ============================================================
@@ -455,24 +473,7 @@ const youIcon = L.divIcon({
     className: '', iconSize:[14,14], iconAnchor:[7,7]
 });
 
-// Build hospitals data from Django context
-const hospitalData = [
-    {% for h in hospitals %}
-    {% if h.latitude and h.longitude %}
-    {
-        name: "{{ h.hospital_name|escapejs }}",
-        lat: {{ h.latitude }},
-        lng: {{ h.longitude }},
-        address: "{{ h.address|escapejs }}",
-        contact: "{{ h.contact_number|escapejs }}",
-        city: "{{ h.city|escapejs }}",
-        state: "{{ h.state|escapejs }}",
-        blood_bank: {{ h.blood_bank_available|yesno:"true,false" }},
-        verified: {{ h.verified|yesno:"true,false" }}
-    },
-    {% endif %}
-    {% endfor %}
-];
+
 
 // Place all markers and keep references
 const markerMap = {};  // name (lowercase) -> {marker, data}
@@ -531,7 +532,7 @@ function onHospitalSearchInput(val) {
     }
 
     ac.innerHTML = matches.map(({data}, i) => `
-        <div class="autocomplete-item" data-name="${data.name}" onmousedown="selectHospital('${data.name.replace(/'/g,"\'")}')">
+        <div class="autocomplete-item" data-name="${data.name}" onmousedown="selectHospital('${data.name.replace(/'/g, "\\'")}')">
             <div class="autocomplete-icon"><i class="bi bi-hospital-fill"></i></div>
             <div>
                 <div class="autocomplete-name">${highlightMatch(data.name, val)}</div>
