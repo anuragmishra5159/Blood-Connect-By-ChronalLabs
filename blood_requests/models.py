@@ -3,6 +3,7 @@ BloodConnect Blood Request Models
 """
 from django.db import models
 from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class BloodRequest(models.Model):
@@ -34,8 +35,14 @@ class BloodRequest(models.Model):
     hospital_name = models.CharField(max_length=200)
     hospital_address = models.TextField()
     hospital_contact = models.CharField(max_length=15, blank=True)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    latitude = models.DecimalField(
+        max_digits=9, decimal_places=6, null=True, blank=True,
+        validators=[MinValueValidator(-90.0), MaxValueValidator(90.0)]
+    )
+    longitude = models.DecimalField(
+        max_digits=9, decimal_places=6, null=True, blank=True,
+        validators=[MinValueValidator(-180.0), MaxValueValidator(180.0)]
+    )
     city = models.CharField(max_length=100, blank=True)
     urgency_level = models.CharField(max_length=20, choices=URGENCY_CHOICES, default='urgent')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
