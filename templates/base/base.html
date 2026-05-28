@@ -59,6 +59,18 @@
                                 class="bi bi-hospital me-1"></i>{% t "All Hospitals" %}</a></li>
                     {% endif %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'request_list' %}"><i
+                                class="bi bi-exclamation-circle me-1"></i>Requests</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-1" href="{% url 'chat_list' %}">
+                            <i class="bi bi-chat-dots-fill"></i>
+                            <span>Messages</span>
+                            {% if total_unread_chats > 0 %}
+                            <span class="badge bg-danger rounded-pill" style="font-size: 0.68rem; padding: 0.25em 0.5em;">
+                                {{ total_unread_chats }}
+                            </span>
+                            {% endif %}
+                        </a>
+                    </li>
                                 class="bi bi-exclamation-circle me-1"></i>{% t "Requests" %}</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#"

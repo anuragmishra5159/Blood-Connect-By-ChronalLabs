@@ -169,10 +169,22 @@
                 <hr class="my-4">
                 <h6 class="fw-bold mb-3">Donor Responses ({{ responses|length }})</h6>
                 {% for resp in responses %}
-                <div class="response-item">
-                    <i class="bi bi-person-check-fill text-blood me-2"></i>
-                    <span>{{ resp.donor.get_full_name|default:resp.donor.username }}</span>
-                    <span class="badge ms-2">{{ resp.get_status_display }}</span>
+                <div class="response-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="bi bi-person-check-fill text-blood me-2"></i>
+                        <span>{{ resp.donor.get_full_name|default:resp.donor.username }}</span>
+                        <span class="badge ms-2 bg-secondary">{{ resp.get_status_display }}</span>
+                    </div>
+                    {% if user == blood_request.requester or user == resp.donor %}
+                    <a href="{% url 'chat_room' resp.id %}" class="btn btn-outline-blood btn-xs d-flex align-items-center gap-1">
+                        <i class="bi bi-chat-dots-fill"></i>Chat
+                        {% if resp.unread_count > 0 %}
+                        <span class="badge bg-danger rounded-pill" style="font-size: 0.7rem; padding: 0.25em 0.5em;">
+                            {{ resp.unread_count }}
+                        </span>
+                        {% endif %}
+                    </a>
+                    {% endif %}
                 </div>
                 {% endfor %}
                 {% endif %}

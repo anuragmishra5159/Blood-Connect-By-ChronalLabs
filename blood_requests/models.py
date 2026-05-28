@@ -156,3 +156,26 @@ class DonorNotification(models.Model):
 
     def __str__(self):
         return f"{self.donor.username} notified for {self.blood_request} ({self.status})"
+
+
+class ChatMessage(models.Model):
+    donor_response = models.ForeignKey(
+        DonorResponse,
+        on_delete=models.CASCADE,
+        related_name='chat_messages'
+    )
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='sent_chat_messages'
+    )
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"{self.sender.username}: {self.message[:30]} ({self.created_at.strftime('%M:%S')})"
+
