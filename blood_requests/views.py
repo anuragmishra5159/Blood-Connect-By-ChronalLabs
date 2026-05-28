@@ -29,10 +29,37 @@ def request_detail(request, pk):
     blood_request = get_object_or_404(BloodRequest, pk=pk)
     responses = blood_request.donor_responses.all().select_related("donor")
     ranked_donors = blood_request.get_ranked_donors(radius_km=50)
+
+    # Determine whether the currently logged-in hospital can fulfill this request.
+    can_hospital_fulfill = False
+    hospital_stock_for_type = 0
+    if (
+        request.user.is_authenticated
+        and request.user.role == "hospital"
+        and blood_request.linked_hospital is not None
+    ):
+        try:
+            hospital = request.user.hospital_profile
+            if hospital.pk == blood_request.linked_hospital_id and blood_request.status == "open":
+                from hospitals.services import get_stock_field_name
+                blood_stock = getattr(hospital, "blood_stock", None)
+                if blood_stock:
+                    field_name = get_stock_field_name(
+                        blood_request.blood_group, blood_request.rh_factor
+                    )
+                    if field_name:
+                        hospital_stock_for_type = getattr(blood_stock, field_name, 0)
+                        can_hospital_fulfill = hospital_stock_for_type >= blood_request.units_remaining
+        except Exception:
+            # Never crash the detail page due to missing profile data.
+            pass
+
     return render(request, "requests/detail.html", {
         "blood_request": blood_request,
         "responses": responses,
         "ranked_donors": ranked_donors,
+        "can_hospital_fulfill": can_hospital_fulfill,
+        "hospital_stock_for_type": hospital_stock_for_type,
     })
 
 
