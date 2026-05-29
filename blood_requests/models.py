@@ -4,6 +4,7 @@ BloodConnect Blood Request Models
 from django.db import models
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
 
 
 class BloodRequest(models.Model):
@@ -25,6 +26,16 @@ class BloodRequest(models.Model):
         ('expired', 'Expired'),
     ]
     
+    # Optional link to a registered HospitalProfile. If None, the plain text
+    # hospital_name/address/contact fields are the sole source of truth.
+    linked_hospital = models.ForeignKey(
+        'hospitals.HospitalProfile',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='linked_blood_requests',
+        verbose_name='Linked Hospital Profile',
+    )
     requester = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='blood_requests_made')
     patient_name = models.CharField(max_length=100)
     patient_age = models.PositiveIntegerField(null=True, blank=True)
@@ -90,6 +101,15 @@ class BloodRequest(models.Model):
             radius_km=radius_km
         )
 
+    def fulfill_from_hospital_stock(self, hospital):
+        """Delegate stock-based fulfillment to the hospitals service layer.
+
+        Returns (success: bool, message: str).
+        Raises no exceptions — errors are returned as (False, reason).
+        """
+        from hospitals.services import fulfill_request_from_stock
+        return fulfill_request_from_stock(hospital, self)
+
 
 class DonorResponse(models.Model):
     STATUS_CHOICES = [
@@ -143,3 +163,26 @@ class DonorNotification(models.Model):
 
     def __str__(self):
         return f"{self.donor.username} notified for {self.blood_request} ({self.status})"
+
+
+class ChatMessage(models.Model):
+    donor_response = models.ForeignKey(
+        DonorResponse,
+        on_delete=models.CASCADE,
+        related_name='chat_messages'
+    )
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='sent_chat_messages'
+    )
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"{self.sender.username}: {self.message[:30]} ({self.created_at.strftime('%M:%S')})"
+
